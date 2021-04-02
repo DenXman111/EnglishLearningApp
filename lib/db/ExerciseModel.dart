@@ -1,22 +1,28 @@
+import 'package:hive/hive.dart';
 
+part 'ExerciseModel.g.dart';
 
-class Exercise {
-  int id;
-  int gameId;
+@HiveType(typeId: 2)
+class Exercise extends HiveObject {
+  @HiveField(0)
+  int gameKey;
+
+  @HiveField(1)
+  List<int> questionKeys;
 
   Exercise({
-    this.id,
-    this.gameId
+    this.gameKey,
+    this.questionKeys
   });
 
   factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
-    id: json["id"],
-    gameId: json["game_id"],
+      gameKey: json["game_key"],
+      questionKeys: json["question_keys"]
   );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "gameId": gameId,
+    "game_key": gameKey,
+    "question_keys": questionKeys,
   };
 
 }

@@ -17,14 +17,13 @@ class MenuPageState extends State<MenuPage>{
           ),
         ),
         actions: <Widget>[
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(text: '12 ', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
-                WidgetSpan(child: Icon(Icons.stars_rounded, size: 32)),
+          Row(
+              children: <Widget> [
+                Text('12 ', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
+                Icon(Icons.stars_rounded, size: 32),
+                Text(' '),
               ],
             ),
-          ),
         ],
       ),
       body: Center(

@@ -1,3 +1,5 @@
+import 'package:english_learning_app/db/Database.dart';
+import 'package:english_learning_app/db/GameModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +9,7 @@ import '../viewmodels/MenuPage.dart';
 class MenuPageState extends State<MenuPage>{
   @override
   Widget build(BuildContext context) {
+    List<Game> data = DataStorage.db.getAllGames();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -32,7 +35,7 @@ class MenuPageState extends State<MenuPage>{
           children: <Widget>[
             TextButton(
               child: Text(
-                'Game 1',
+                data[0].title,
                 style: GoogleFonts.quicksand(
                   fontSize: 48,
                   fontWeight: FontWeight.w400,
@@ -46,13 +49,13 @@ class MenuPageState extends State<MenuPage>{
                 //onSurface: Colors.white,
               ),
               onPressed: (){
-                print ('Game 1');
+                print (data[0].description);
               },
             ),
             SizedBox(height: 25),
             TextButton(
               child: Text(
-                'Game 2',
+                data[1].title,
                 style: GoogleFonts.quicksand(
                   fontSize: 48,
                   fontWeight: FontWeight.w400,
@@ -65,7 +68,7 @@ class MenuPageState extends State<MenuPage>{
                 //onSurface: Colors.white,
               ),
               onPressed: (){
-                print ('Game 2');
+                print (data[1].description);
               },
             ),
             SizedBox(height: 25),

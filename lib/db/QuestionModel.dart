@@ -19,6 +19,9 @@ class Question extends HiveObject {
   @HiveField(4)
   int exerciseKey;
 
+  @HiveField(5)
+  int dbKey;
+
 
   Question({
     this.pointObtained,

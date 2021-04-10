@@ -22,7 +22,7 @@ class MenuPageState extends State<MenuPage>{
         actions: <Widget>[
           Row(
               children: <Widget> [
-                Text('12 ', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
+                Text(DataStorage.db.totalAmountOfPoints().toString(), style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
                 Icon(Icons.stars_rounded, size: 32),
                 Text(' '),
               ],

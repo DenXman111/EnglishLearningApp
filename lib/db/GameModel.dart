@@ -5,22 +5,21 @@ part 'GameModel.g.dart';
 @HiveType(typeId: 10)
 class Game extends HiveObject {
   @HiveField(0)
-  int id;
-
-  @HiveField(1)
   String title;
 
-  @HiveField(2)
+  @HiveField(1)
   String storageType; // todo: replace with some enum?
 
-  @HiveField(3)
+  @HiveField(2)
   String description;
 
-  @HiveField(4)
+  @HiveField(3)
   List<int> exerciseKeys;
 
+  @HiveField(4)
+  int dbKey;
+
   Game({
-    this.id,
     this.title,
     this.storageType,
     this.description,
@@ -28,7 +27,6 @@ class Game extends HiveObject {
   });
 
   factory Game.fromMap(Map<String, dynamic> json) => new Game(
-    id: json["id"],
     title: json["title"],
     storageType: json["storage_type"],
     description: json["description"],
@@ -36,7 +34,6 @@ class Game extends HiveObject {
   );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
     "title": title,
     "storageType": storageType,
     "description": description,

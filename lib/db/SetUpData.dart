@@ -1,4 +1,4 @@
-const List<Map<String, dynamic>> setUpData = [
+const List<Map<String, dynamic>> gamesSetUpData = [
   {
     "id": 1,
     "title": "Game 1 from DB",
@@ -20,5 +20,8 @@ const List<Map<String, dynamic>> setUpData = [
     "description": "Game three - grammar",
     "exerciseKeys": []
   }
-
 ];
+
+const Map<String, dynamic> specialValsSetUpData = {
+    "points_sum": 1234
+};

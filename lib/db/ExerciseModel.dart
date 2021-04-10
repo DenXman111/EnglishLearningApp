@@ -10,6 +10,9 @@ class Exercise extends HiveObject {
   @HiveField(1)
   List<int> questionKeys;
 
+  @HiveField(2)
+  int dbKey;
+
   Exercise({
     this.gameKey,
     this.questionKeys

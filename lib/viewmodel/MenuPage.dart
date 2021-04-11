@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../views/MenuPageState.dart';
+import '../view/MenuPageState.dart';
 
 class MenuPage extends StatefulWidget {
   static String routeName = "/";

@@ -105,8 +105,10 @@ class DataStorage {
     return true;
   }
 
-  int totalAmountOfPoints() {
+  int getTotalPoints() {
     return special.get("points_sum");
   }
-
+  void setTotalPoints(int points){
+    special.put("points_sum", points);
+  }
 }

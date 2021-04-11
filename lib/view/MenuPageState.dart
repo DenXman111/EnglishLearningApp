@@ -4,12 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../viewmodels/MenuPage.dart';
+import '../viewmodel/MenuPage.dart';
+import '../viewmodel/TotalPoints.dart';
 
 class MenuPageState extends State<MenuPage>{
   @override
   Widget build(BuildContext context) {
     List<Game> data = DataStorage.db.getAllGames();
+    TotalPoints totalPoints = new TotalPoints();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -22,7 +25,7 @@ class MenuPageState extends State<MenuPage>{
         actions: <Widget>[
           Row(
               children: <Widget> [
-                Text(DataStorage.db.totalAmountOfPoints().toString(), style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
+                Text(totalPoints.formatter.format(totalPoints.get()), style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
                 Icon(Icons.stars_rounded, size: 32),
                 Text(' '),
               ],
@@ -64,6 +67,7 @@ class MenuPageState extends State<MenuPage>{
               ),
               style: TextButton.styleFrom(
                 primary: Colors.deepOrange,
+                padding: EdgeInsets.all(16.0),
                 //backgroundColor: Colors.grey,
                 //onSurface: Colors.white,
               ),
@@ -83,6 +87,7 @@ class MenuPageState extends State<MenuPage>{
               ),
               style: TextButton.styleFrom(
                 primary: Colors.deepOrange,
+                padding: EdgeInsets.all(16.0),
                 //backgroundColor: Colors.grey,
                 //onSurface: Colors.white,
               ),

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'db/Database.dart';
-import 'viewmodels/MenuPage.dart';
+import 'viewmodel/MenuPage.dart';
 
 void main() async{
   await DataStorage.db.DBInit(true);

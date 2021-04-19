@@ -1,10 +1,11 @@
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/GameModel.dart';
+import 'package:english_learning_app/viewmodel/PastParticipleGameWidget.dart';
+import 'package:english_learning_app/viewmodel/MenuPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../viewmodel/MenuPage.dart';
 import '../viewmodel/TotalPoints.dart';
 
 class MenuPageState extends State<MenuPage>{
@@ -73,6 +74,10 @@ class MenuPageState extends State<MenuPage>{
               ),
               onPressed: (){
                 print (data[1].description);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PastParticipleGame()),
+                );
               },
             ),
             SizedBox(height: 25),

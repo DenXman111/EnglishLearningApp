@@ -1,10 +1,10 @@
 import 'package:english_learning_app/db/GameModel.dart';
 import 'package:english_learning_app/db/ExerciseModel.dart';
 import 'package:hive/hive.dart';
+import 'DBInitialization.dart';
 import 'QuestionModel.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'SetUpData.dart';
 
 class DataStorage {
 
@@ -19,17 +19,6 @@ class DataStorage {
 
   bool init = false;
 
-  DBResetData() async {
-    gamesSetUpData.forEach((element) {
-      DataStorage.db.newGame(Game.fromMap(element));
-    });
-
-    specialValsSetUpData.forEach((key, value) {
-      special.put(key, value);
-    });
-
-  }
-
   DBInit(bool reset) async {
     await Hive.initFlutter();
     Hive.registerAdapter(QuestionAdapter());
@@ -42,39 +31,41 @@ class DataStorage {
     special = await Hive.openBox('Special');
 
     if (reset) {
+        await questions.deleteAll(questions.keys);
+        await games.deleteAll(games.keys);
+        await special.deleteAll(special.keys);
+        await exercises.deleteAll(exercises.keys);
         DBResetData();
     }
   }
 
-  int newGame(Game game) {
-    game.dbKey = db.games.length;
-    db.games.put(db.games.length, game);
+  void storeGame(Game game) {
+    db.games.put(game.dbKey, game);
     game.save();
-    return db.games.length - 1;
   }
 
-  int newExercise(Exercise exercise)  {
-    exercise.dbKey = db.exercises.length;
-    db.exercises.put(db.exercises.length, exercise);
+  void storeExercise(Exercise exercise)  {
+    db.exercises.put(exercise.dbKey, exercise);
     exercise.save();
-
     Game game = db.games.get(exercise.gameKey);
-    game.exerciseKeys.add(db.exercises.length - 1);
-    game.save();
 
-    return db.exercises.length - 1;
+    var secondList = game.exerciseKeys.map((item) => String.fromEnvironment(item)).toList();
+    secondList.add(exercise.dbKey);
+    game.exerciseKeys = secondList;
+    game.save();
   }
 
-  int newQuestion(Question question) {
-    question.dbKey = db.questions.length;
-    db.questions.put(db.questions.length, question);
+  void storeQuestion(Question question) {
+    db.questions.put(question.dbKey, question);
     question.save();
 
-    Exercise exercise = db.games.get(question.exerciseKey);
-    exercise.questionKeys.add(db.exercises.length - 1);
-    exercise.save();
+    Exercise exercise = db.exercises.get(question.exerciseKey);
+    var secondList = exercise.questions;
+    secondList.add(question);
 
-    return db.questions.length - 1;
+
+    exercise.questions = secondList;
+    exercise.save();
   }
 
   List<Game> getAllGames() {
@@ -87,9 +78,9 @@ class DataStorage {
     return list.where((f) => f.gameKey == gameId).toList();
   }
 
-  List<Question> getAllQuestions(int exerciseId) {
+  List<Question> getAllQuestions(String exerciseKey) {
     List<Question> list = db.questions.isNotEmpty ? db.questions.values.toList().cast<Question>() : [];
-    return list.where((f) => f.exerciseKey == exerciseId).toList();
+    return list.where((f) => f.exerciseKey == exerciseKey).toList();
   }
 
   bool setPoint(Question question) {

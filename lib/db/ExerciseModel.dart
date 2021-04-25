@@ -1,3 +1,6 @@
+
+import 'package:english_learning_app/db/QuestionModel.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'ExerciseModel.g.dart';
@@ -8,24 +11,33 @@ class Exercise extends HiveObject {
   int gameKey;
 
   @HiveField(1)
-  List<int> questionKeys;
+  /* Note: this can't be changed to set, because Hive doesn't like it */
+  List<Question> questions;
 
   @HiveField(2)
-  int dbKey;
+  String dbKey;
+
+  @HiveField(3)
+  String description;
 
   Exercise({
     this.gameKey,
-    this.questionKeys
-  });
+    this.dbKey,
+    this.description,
+  }){
+    this.questions = [];
+  }
+
 
   factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
       gameKey: json["game_key"],
-      questionKeys: json["question_keys"]
+      dbKey: json["exercise_id"],
+      description: json["description"],
   );
 
   Map<String, dynamic> toMap() => {
     "game_key": gameKey,
-    "question_keys": questionKeys,
+    "description": description
   };
 
 }

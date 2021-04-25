@@ -18,20 +18,23 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
     };
     return Exercise(
       gameKey: fields[0] as int,
-      questionKeys: (fields[1] as List)?.cast<int>(),
-    )..dbKey = fields[2] as int;
+      dbKey: fields[2] as String,
+      description: fields[3] as String,
+    )..questions = (fields[1] as List)?.cast<Question>();
   }
 
   @override
   void write(BinaryWriter writer, Exercise obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.gameKey)
       ..writeByte(1)
-      ..write(obj.questionKeys)
+      ..write(obj.questions)
       ..writeByte(2)
-      ..write(obj.dbKey);
+      ..write(obj.dbKey)
+      ..writeByte(3)
+      ..write(obj.description);
   }
 
   @override

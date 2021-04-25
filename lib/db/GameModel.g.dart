@@ -17,11 +17,12 @@ class GameAdapter extends TypeAdapter<Game> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Game(
-      title: fields[0] as String,
-      storageType: fields[1] as String,
-      description: fields[2] as String,
-      exerciseKeys: (fields[3] as List)?.cast<int>(),
-    )..dbKey = fields[4] as int;
+      dbKey: fields[0] as int,
+      title: fields[1] as String,
+      storageType: fields[2] as String,
+      description: fields[3] as String,
+      exerciseKeys: (fields[4] as List)?.cast<String>(),
+    );
   }
 
   @override
@@ -29,15 +30,15 @@ class GameAdapter extends TypeAdapter<Game> {
     writer
       ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.title)
+      ..write(obj.dbKey)
       ..writeByte(1)
-      ..write(obj.storageType)
+      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.description)
+      ..write(obj.storageType)
       ..writeByte(3)
-      ..write(obj.exerciseKeys)
+      ..write(obj.description)
       ..writeByte(4)
-      ..write(obj.dbKey);
+      ..write(obj.exerciseKeys);
   }
 
   @override

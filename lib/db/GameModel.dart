@@ -4,33 +4,41 @@ part 'GameModel.g.dart';
 
 @HiveType(typeId: 10)
 class Game extends HiveObject {
+
   @HiveField(0)
-  String title;
-
-  @HiveField(1)
-  String storageType; // todo: replace with some enum?
-
-  @HiveField(2)
-  String description;
-
-  @HiveField(3)
-  List<int> exerciseKeys;
-
-  @HiveField(4)
   int dbKey;
 
+  @HiveField(1)
+  String title;
+
+  @HiveField(2)
+  String storageType; // todo: replace with some enum?
+
+  @HiveField(3)
+  String description;
+
+  @HiveField(4)
+  /* Note: this can't be changed to set, because Hive doesn't like it */
+  List<String> exerciseKeys;
+
   Game({
+    this.dbKey,
     this.title,
     this.storageType,
     this.description,
-    this.exerciseKeys
-  });
+    this.exerciseKeys,
+  }) {
+
+    // if (this.exerciseKeys == null)
+    //   this.exerciseKeys = List<String>();
+  }
 
   factory Game.fromMap(Map<String, dynamic> json) => new Game(
+    dbKey: json["id"],
     title: json["title"],
-    storageType: json["storage_type"],
+    storageType: json["storageType"],
     description: json["description"],
-    exerciseKeys: json["exercise_keys"],
+    exerciseKeys: json["exerciseKeys"].cast<String>(),
   );
 
   Map<String, dynamic> toMap() => {

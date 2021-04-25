@@ -1,7 +1,7 @@
 const List<Map<String, dynamic>> gamesSetUpData = [
   {
     "id": 1,
-    "title": "Game 1 from DB",
+    "title": "Dictionary",
     "storageType": "API",
     "description": "Game one - words translation",
     "exerciseKeys": []
@@ -30,5 +30,5 @@ const List<Map<String, dynamic>> gamesSetUpData = [
 ];
 
 const Map<String, dynamic> specialValsSetUpData = {
-    "points_sum": 1234
+    "points_sum": 77
 };

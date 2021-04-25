@@ -1,6 +1,7 @@
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/GameModel.dart';
 import 'package:english_learning_app/viewmodel/PastParticipleGameWidget.dart';
+import 'package:english_learning_app/viewmodel/DictionaryGameWidget.dart';
 import 'package:english_learning_app/viewmodel/MenuPage.dart';
 import 'package:english_learning_app/viewmodel/GamePage.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,6 +57,10 @@ class MenuPageState extends State<MenuPage>{
               ),
               onPressed: (){
                 print (data[0].description);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DictionaryGame()),
+                );
               },
             ),
             SizedBox(height: 25),

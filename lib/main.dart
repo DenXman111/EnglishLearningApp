@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         MenuPage.routeName : (context) => MenuPage(),
-        //TODO Create other pages and paste their routeName's here
       },
       initialRoute: MenuPage.routeName,
     );

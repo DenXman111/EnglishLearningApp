@@ -15,6 +15,7 @@ class DictionaryGameState extends State<DictionaryGame> {
 
   TextEditingController _editingController = TextEditingController();
 
+  Timer _typingTimer;
   StreamController _streamController;
   Stream _stream;
 
@@ -23,7 +24,7 @@ class DictionaryGameState extends State<DictionaryGame> {
       _streamController.add(null);
       return;
     }
-    //_streamController.add("waiting");
+    _streamController.add("waiting");
     http.Response response = await http.get(Uri.parse(_url + _editingController.text.trim()), headers: {"Authorization": "Token " + _token});
     _streamController.add(json.decode(response.body));
   }
@@ -59,7 +60,10 @@ class DictionaryGameState extends State<DictionaryGame> {
                   ),
                   child: TextFormField(
                     onChanged: (String text) {
-
+                      if (_typingTimer?.isActive ?? false) _typingTimer.cancel();
+                      _typingTimer = Timer(const Duration(milliseconds: 1000), () {
+                        _search();
+                      });
                     },
                     controller: _editingController,
                     decoration: InputDecoration(

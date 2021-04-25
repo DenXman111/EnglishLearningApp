@@ -21,14 +21,15 @@ class QuestionAdapter extends TypeAdapter<Question> {
       pointObtainTime: fields[3] as DateTime,
       question: fields[0] as String,
       answer: fields[1] as String,
-      exerciseKey: fields[4] as int,
-    )..dbKey = fields[5] as int;
+      exerciseKey: fields[4] as String,
+      allAnswers: (fields[6] as List)?.cast<String>(),
+    )..dbKey = fields[5] as String;
   }
 
   @override
   void write(BinaryWriter writer, Question obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(2)
       ..write(obj.pointObtained)
       ..writeByte(3)
@@ -40,7 +41,9 @@ class QuestionAdapter extends TypeAdapter<Question> {
       ..writeByte(4)
       ..write(obj.exerciseKey)
       ..writeByte(5)
-      ..write(obj.dbKey);
+      ..write(obj.dbKey)
+      ..writeByte(6)
+      ..write(obj.allAnswers);
   }
 
   @override

@@ -4,6 +4,8 @@ part 'QuestionModel.g.dart';
 
 @HiveType(typeId: 3)
 class Question extends HiveObject {
+  int id;
+
   @HiveField(2)
   bool pointObtained;
 
@@ -17,10 +19,14 @@ class Question extends HiveObject {
   String answer;
 
   @HiveField(4)
-  int exerciseKey;
+  String exerciseKey;
 
   @HiveField(5)
-  int dbKey;
+  String dbKey;
+
+
+  @HiveField(6)
+  List<String> allAnswers;
 
 
   Question({
@@ -28,15 +34,21 @@ class Question extends HiveObject {
     this.pointObtainTime,
     this.question,
     this.answer,
-    this.exerciseKey
-  });
-
+    this.exerciseKey,
+    this.allAnswers,
+    this.id
+  }){
+    dbKey = this.exerciseKey + "_" + this.id.toString();
+  }
+  //
   factory Question.fromMap(Map<String, dynamic> json) => new Question (
-    pointObtained: json["point_obtained"],
-    pointObtainTime: json["point_obtain_time"],
+    pointObtained: false,
+    pointObtainTime: null,
     question: json["question"],
     answer: json["answer"],
     exerciseKey: json["exercise_key"],
+    id: json["question_id"],
+    allAnswers: json["all_answers"],
   );
 
   Map<String, dynamic> toMap() => {
@@ -45,6 +57,7 @@ class Question extends HiveObject {
     "question": question,
     "answer": answer,
     "exercise_key": exerciseKey,
+    "all_answers": allAnswers,
   };
 
 }

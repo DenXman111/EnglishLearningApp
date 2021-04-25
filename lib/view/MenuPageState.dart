@@ -2,6 +2,7 @@ import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/GameModel.dart';
 import 'package:english_learning_app/viewmodel/PastParticipleGameWidget.dart';
 import 'package:english_learning_app/viewmodel/MenuPage.dart';
+import 'package:english_learning_app/viewmodel/GamePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,7 @@ class MenuPageState extends State<MenuPage>{
   @override
   Widget build(BuildContext context) {
     List<Game> data = DataStorage.db.getAllGames();
+
     TotalPoints totalPoints = new TotalPoints();
 
     return Scaffold(
@@ -77,6 +79,31 @@ class MenuPageState extends State<MenuPage>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => PastParticipleGame()),
+                );
+              },
+            ),
+            SizedBox(height: 25),
+            TextButton(
+              child: Text(
+                data[3].title,
+                style: GoogleFonts.quicksand(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w400,
+                ),
+
+              ),
+              style: TextButton.styleFrom(
+                primary: Colors.deepOrange,
+                padding: EdgeInsets.all(16.0),
+                //backgroundColor: Colors.grey,
+                //onSurface: Colors.white,
+              ),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GamePage(data[3].dbKey),
+                  ),
                 );
               },
             ),

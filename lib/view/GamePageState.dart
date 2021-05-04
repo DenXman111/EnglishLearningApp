@@ -25,7 +25,7 @@ class GamePageState extends State<GamePage>{
         buttonsList
             .add(new TextButton(
                     child: Text(
-                      "Exercise " + exercises[i].dbKey.toString(),
+                      "Exercise " + (i + 1).toString(),
                       style: GoogleFonts.quicksand(
                         fontSize: 48,
                         fontWeight: FontWeight.w400,
@@ -40,7 +40,7 @@ class GamePageState extends State<GamePage>{
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ExercisePage( exercises[i].dbKey),
+                          builder: (context) => ExercisePage(exercises[i].dbKey),
                         ),
                         //    argumne
                       );

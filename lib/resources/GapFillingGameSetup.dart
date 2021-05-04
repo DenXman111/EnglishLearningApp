@@ -51,13 +51,13 @@ const List<Map<String, dynamic>> gapFillingQuestions = [
     "question_id": 7,
   },
   {
-    "question": "I hated _  music that was played last night at the party.",
+    "question": "I hated _ music that was played last night at the party.",
     "answer": "the",
     "exercise_key": "Game_5_ex_1",
     "question_id": 8,
   },
   {
-    "question": "Let's go to _ grocery. We only have _ few onions left!",
+    "question": "Let's go to _ grocery. We only have few onions left!",
     "answer": "the",
     "exercise_key": "Game_5_ex_1",
     "question_id": 9,

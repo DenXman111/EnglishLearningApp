@@ -8,12 +8,32 @@ import 'package:google_fonts/google_fonts.dart';
 import '../viewmodel/TotalPoints.dart';
 import '../viewmodel/ExercisePage.dart';
 
+enum VerificationResult {
+  CORRECT,
+  INCORRECT
+}
+
 
 class ExercisePageState extends State<ExercisePage>{
 
   String exerciseKey;
   ExercisePageState(this.exerciseKey);
   Exercise exercise;
+
+  static const scale = 7.2;
+
+  List<VerificationResult> check(List<Question> questions, List<String> answers) {
+    List<VerificationResult> results = List<VerificationResult>();
+    for (int i = 0; i < questions.length; i++) {
+      if (questions[i].answer.toLowerCase() == answers[i].toLowerCase().trim()) {
+        results.add(VerificationResult.CORRECT);
+        DataStorage.db.setPoint(questions[i]);
+      } else {
+        results.add(VerificationResult.INCORRECT);
+      }
+    }
+    return results;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,38 +49,90 @@ class ExercisePageState extends State<ExercisePage>{
         List<String> questionParts = question.split("_");
         double maxWidth = questionParts[0].length + questionParts[1].length + 5.0;
 
-        input.add(TextFormField(
-            controller: TextEditingController(),
-            decoration: new InputDecoration(
-                prefixText: questionParts[0],
-                hintText: "___",
-                suffixText: questionParts[1], // new TextSpan(text: '@ipportalegre.pt').text,
-                prefixIconConstraints: BoxConstraints(maxWidth: maxWidth),
-            ),
-        ));
+        double questionFillLength = questions[i].answer.length.toDouble() < 3? 3: questions[i].answer.length;
+
+        input.add(Container(
+            width: (question.length + questionFillLength) * scale,
+            child:
+            TextFormField(
+                    controller: TextEditingController(),
+                    decoration: new InputDecoration(
+                        prefixText: questionParts[0],
+                        hintText: "_" * questionFillLength.toInt(),
+                        suffixText: questionParts[1],
+                        prefixIconConstraints: BoxConstraints(maxWidth: maxWidth),
+                    ),
+        )
+        )
+        );
+
       }
       return input;
     }
 
-    Widget _submitButton() {
-      return new TextButton(
-        child: Text("Submit",
-          style: GoogleFonts.quicksand(
-          ),
+    Widget _buildPopupDialog(BuildContext context, List<Question> questions, List<String> answers, List<VerificationResult> results) {
 
+      List<Widget> resultsDisplay = List<Widget>();
+      for (int i = 0; i < answers.length; i++) {
+        Color c = results[i] == VerificationResult.CORRECT? Colors.green: Colors.red;
+        resultsDisplay.add(
+          new Text(
+              (i + 1).toString() + ". " + questions[i].question.replaceFirst("_", answers[i]),
+            style: TextStyle(color: c),
+          )
+        );
+      }
+
+
+      return new AlertDialog(
+        title: const Text('Exercise result'),
+        content: new Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: resultsDisplay
         ),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            textColor: Theme.of(context).primaryColor,
+            child: const Text('Close'),
+          ),
+        ],
+      );
+    }
+
+
+    Widget _submitButton() {
+      return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.deepOrange)
+          ),
+          child: new TextButton(
+        child: Text("Submit", style: GoogleFonts.quicksand()),
         style: TextButton.styleFrom(
           primary: Colors.deepOrange,
           padding: EdgeInsets.all(16.0),
         ),
         onPressed: () {
+          // TODO: OPTIMISE
+          List<String> answers = List<String>();
           input.forEach((element) {
-            TextFormField tff = element;
-            // TODO: add log for validation of input
-            print("Input for question: " + tff.controller.text);
+            Container c = element;
+            TextFormField tff = c.child;
+            answers.add(tff.controller.text);
           });
+
+          List<VerificationResult> results = check(questions, answers);
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => _buildPopupDialog(context, questions, answers, results),
+          ).then((value) => Navigator.pop(context));
         },
-      );
+
+      ));
     }
 
     return Scaffold(
@@ -83,8 +155,9 @@ class ExercisePageState extends State<ExercisePage>{
         ],
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.all(23.0),
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: _buildButtonsWithNames() + [_submitButton()]
         ),
       ),

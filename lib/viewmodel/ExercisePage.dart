@@ -10,6 +10,6 @@ class ExercisePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return ExercisePageState(this.exerciseKey);
+    return GapFillingExercisePageState(this.exerciseKey);
   }
 }

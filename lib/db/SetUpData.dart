@@ -8,9 +8,9 @@ const List<Map<String, dynamic>> gamesSetUpData = [
   },
   {
     "id": 2,
-    "title": "Game 2 from DB",
+    "title": "Synonyms & Antonyms",
     "storageType": "API",
-    "description": "Game two - something",
+    "description": "Find synonyms and antonyms for a word",
     "exerciseKeys": []
   },
   {

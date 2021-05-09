@@ -4,6 +4,7 @@ import 'package:english_learning_app/viewmodel/PastParticipleGameWidget.dart';
 import 'package:english_learning_app/viewmodel/DictionaryGameWidget.dart';
 import 'package:english_learning_app/viewmodel/MenuPage.dart';
 import 'package:english_learning_app/viewmodel/GamePage.dart';
+import 'package:english_learning_app/viewmodel/SynsAntonymsGamePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -83,6 +84,30 @@ class MenuPageState extends State<MenuPage>{
                 print (data[1].description);
                 Navigator.push(
                   context,
+                  MaterialPageRoute(builder: (context) => SynsAntonymsGamePage()),
+                );
+              },
+            ),
+            SizedBox(height: 25),
+            TextButton(
+              child: Text(
+                data[2].title,
+                style: GoogleFonts.quicksand(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w400,
+                ),
+
+              ),
+              style: TextButton.styleFrom(
+                primary: Colors.deepOrange,
+                padding: EdgeInsets.all(16.0),
+                //backgroundColor: Colors.grey,
+                //onSurface: Colors.white,
+              ),
+              onPressed: (){
+                print (data[2].description);
+                Navigator.push(
+                  context,
                   MaterialPageRoute(builder: (context) => PastParticipleGame()),
                 );
               },
@@ -107,7 +132,7 @@ class MenuPageState extends State<MenuPage>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GamePage(data[3].dbKey),
+                    builder: (context) => GamePage(data[3]),
                   ),
                 );
               },

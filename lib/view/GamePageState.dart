@@ -1,5 +1,6 @@
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/ExerciseModel.dart';
+import 'package:english_learning_app/db/GameModel.dart';
 import 'package:english_learning_app/viewmodel/ExercisePage.dart';
 import 'package:english_learning_app/viewmodel/GamePage.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,11 +12,12 @@ import '../viewmodel/TotalPoints.dart';
 class GamePageState extends State<GamePage>{
 
   int gameKey;
-  GamePageState(this.gameKey);
+  Game game;
+  GamePageState(this.game);
 
   @override
   Widget build(BuildContext context) {
-    List<Exercise> exercises = DataStorage.db.getAllExercises(this.gameKey);
+    List<Exercise> exercises = DataStorage.db.getAllExercises(this.game.dbKey);
     TotalPoints totalPoints = new TotalPoints();
     List<TextButton> buttonsList = new List<TextButton>();
 
@@ -53,7 +55,7 @@ class GamePageState extends State<GamePage>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Filling gaps game',
+          this.game.description,
           style: GoogleFonts.quicksand(
             fontSize: 32,
             fontWeight: FontWeight.w300,

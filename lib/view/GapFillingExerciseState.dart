@@ -14,10 +14,10 @@ enum VerificationResult {
 }
 
 
-class ExercisePageState extends State<ExercisePage>{
+class GapFillingExercisePageState extends State<ExercisePage>{
 
   String exerciseKey;
-  ExercisePageState(this.exerciseKey);
+  GapFillingExercisePageState(this.exerciseKey);
   Exercise exercise;
 
   static const scale = 7.2;

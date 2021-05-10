@@ -1,7 +1,8 @@
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/GameModel.dart';
 import 'package:english_learning_app/viewmodel/PastParticipleGameWidget.dart';
-import 'package:english_learning_app/viewmodel/DictionaryGameWidget.dart';
+import 'package:english_learning_app/viewmodel/DictionaryGame.dart';
+import 'package:english_learning_app/viewmodel/BuildSentencesGame.dart';
 import 'package:english_learning_app/viewmodel/MenuPage.dart';
 import 'package:english_learning_app/viewmodel/GamePage.dart';
 import 'package:english_learning_app/viewmodel/SynsAntonymsGamePage.dart';
@@ -105,17 +106,18 @@ class MenuPageState extends State<MenuPage>{
                 //onSurface: Colors.white,
               ),
               onPressed: (){
-                print (data[2].description);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PastParticipleGame()),
+                  MaterialPageRoute(
+                    builder: (context) => BuildSentencesGame(),
+                  ),
                 );
               },
             ),
             SizedBox(height: 25),
             TextButton(
               child: Text(
-                data[3].title,
+                data[4].title,
                 style: GoogleFonts.quicksand(
                   fontSize: 48,
                   fontWeight: FontWeight.w400,
@@ -132,8 +134,32 @@ class MenuPageState extends State<MenuPage>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GamePage(data[3]),
+                    builder: (context) => GamePage(data[4]),
                   ),
+                );
+              },
+            ),
+            SizedBox(height: 25),
+            TextButton(
+              child: Text(
+                data[5].title,
+                style: GoogleFonts.quicksand(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w400,
+                ),
+
+              ),
+              style: TextButton.styleFrom(
+                primary: Colors.deepOrange,
+                padding: EdgeInsets.all(16.0),
+                //backgroundColor: Colors.grey,
+                //onSurface: Colors.white,
+              ),
+              onPressed: (){
+                print (data[5].description);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PastParticipleGame()),
                 );
               },
             ),

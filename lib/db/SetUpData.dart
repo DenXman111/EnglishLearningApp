@@ -3,7 +3,7 @@ const List<Map<String, dynamic>> gamesSetUpData = [
     "id": 1,
     "title": "Dictionary",
     "storageType": "API",
-    "description": "Game one - words translation",
+    "description": "List meanings of the word.",
     "exerciseKeys": []
   },
   {
@@ -15,9 +15,9 @@ const List<Map<String, dynamic>> gamesSetUpData = [
   },
   {
     "id": 3,
-    "title": "Game 3 from DB",
+    "title": "Build sentences",
     "storageType": "API",
-    "description": "Game three - grammar",
+    "description": "Put words into right sequence in sentence.",
     "exerciseKeys": []
   },
   {

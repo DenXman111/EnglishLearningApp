@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:english_learning_app/viewmodel/DictionaryGameWidget.dart';
+import 'package:english_learning_app/viewmodel/DictionaryGame.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-import '../viewmodel/DictionaryGameWidget.dart';
+import '../viewmodel/DictionaryGame.dart';
 
 class DictionaryGameState extends State<DictionaryGame> {
   final String _url = "https://owlbot.info/api/v4/dictionary/";

@@ -1,4 +1,4 @@
-import 'package:english_learning_app/viewmodel/AnswerWidget.dart';
+import 'package:english_learning_app/view/PastParticipleGame/FormPastParticipleGame.dart';
 import 'package:flutter/material.dart';
 
 import 'Question.dart';
@@ -16,14 +16,13 @@ class Quiz extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build");
     return Column(
       children: [
         Question(
           questions[questionIndex]['questionText'],
         ), //Question
-        Answer(
-                () => answerQuestion(1), questions[questionIndex]['answers'])
+        FormPastParticipleGame(
+            () => answerQuestion(), questions[questionIndex]['answers'])
       ],
     ); //Column
   }

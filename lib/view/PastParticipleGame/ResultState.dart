@@ -12,7 +12,7 @@ class Result extends StatelessWidget {
       resultText = 'You are awesome!';
       print(resultScore);
     } else if (resultScore >= 7) {
-      resultText = 'Pretty likeable!';
+      resultText = 'It is a good score.';
       print(resultScore);
     } else if (resultScore >= 5) {
       resultText = 'You need to work more!';
@@ -27,6 +27,7 @@ class Result extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(resultScore);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

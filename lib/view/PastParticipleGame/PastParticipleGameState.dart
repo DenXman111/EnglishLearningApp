@@ -33,7 +33,7 @@ class PastParticipleGameState extends State<PastParticipleGame> {
 
   var _questionIndex = 0;
   int pointsBeforeGame = 0;
-
+  var _correctAnswers = [[0,0],[0,0],[0,0],[0,0],[0,0]];
 
   void _answerQuestion() {
     setState(() {
@@ -74,8 +74,9 @@ class PastParticipleGameState extends State<PastParticipleGame> {
                       answerQuestion: _answerQuestion,
                       questionIndex: _questionIndex,
                       questions: _questions,
+                      correctAnswers: _correctAnswers,
                     )
-                  : Result(totalPoints.get()-pointsBeforeGame),
+                  : Result(totalPoints.get()-pointsBeforeGame, _questions, _correctAnswers),
             )));
   }
 }

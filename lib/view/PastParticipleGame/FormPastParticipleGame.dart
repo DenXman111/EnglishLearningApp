@@ -8,18 +8,22 @@ class FormPastParticipleGame extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final pastSimpleController = TextEditingController();
   final pastParticipleController = TextEditingController();
+  var correctAnswers;
+  var questionIndex;
 
-  FormPastParticipleGame(this.increaseIndex, this.answerText);
+  FormPastParticipleGame(this.increaseIndex, this.answerText, this.correctAnswers, this.questionIndex);
 
   int awardPoints() {
     int score = 0;
     if (pastSimpleController.text.toLowerCase() ==
         answerText[0].toLowerCase()) {
       score += 1;
+      correctAnswers[questionIndex][0] = 1;
     }
     if (pastParticipleController.text.toLowerCase() ==
         answerText[1].toLowerCase()) {
       score += 1;
+      correctAnswers[questionIndex][1] = 1;
     }
     return score;
   }

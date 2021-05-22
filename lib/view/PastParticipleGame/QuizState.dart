@@ -7,11 +7,13 @@ class Quiz extends StatelessWidget {
   final List<Map<String, Object>> questions;
   final int questionIndex;
   final Function answerQuestion;
+  var correctAnswers;
 
   Quiz({
     @required this.questions,
     @required this.answerQuestion,
     @required this.questionIndex,
+    @required this.correctAnswers,
   });
 
   @override
@@ -22,7 +24,7 @@ class Quiz extends StatelessWidget {
           questions[questionIndex]['questionText'],
         ), //Question
         FormPastParticipleGame(
-            () => answerQuestion(), questions[questionIndex]['answers'])
+            () => answerQuestion(), questions[questionIndex]['answers'], correctAnswers, questionIndex)
       ],
     ); //Column
   }

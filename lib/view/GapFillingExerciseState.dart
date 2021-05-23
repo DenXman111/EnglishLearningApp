@@ -49,7 +49,7 @@ class GapFillingExercisePageState extends State<ExercisePage>{
         List<String> questionParts = question.split("_");
         double maxWidth = questionParts[0].length + questionParts[1].length + 5.0;
 
-        double questionFillLength = questions[i].answer.length.toDouble() < 3? 3: questions[i].answer.length;
+        double questionFillLength = questions[i].answer.length.toDouble() < 3? 3.toDouble(): questions[i].answer.length.toDouble();
 
         input.add(Container(
             width: (question.length + questionFillLength) * scale,

@@ -5,7 +5,7 @@ import 'package:english_learning_app/viewmodel/SynsAntonymsGamePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:collection/collection.dart';
 import '../viewmodel/TotalPoints.dart';
 
 enum VerificationResult {
@@ -22,19 +22,14 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
 
   static const scale = 7.2;
 
-  static const int questionsNumber = 5;
+  static const int questionsNumber = 6;
 
-  List<VerificationResult> check(List<Question> questions, List<String> answers) {
-    List<VerificationResult> results = List<VerificationResult>();
-    for (int i = 0; i < questions.length; i++) {
-      if (questions[i].answer.toLowerCase() == answers[i].toLowerCase().trim()) {
-        results.add(VerificationResult.CORRECT);
-        DataStorage.db.setPoint(questions[i]);
-      } else {
-        results.add(VerificationResult.INCORRECT);
-      }
-    }
-    return results;
+  String _synonymsString(List<String> synonyms) {
+    var a = "";
+    synonyms.forEach((element) {
+      a += element + " ";
+    });
+    return a;
   }
 
   List<Question> _questions() {
@@ -70,81 +65,114 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     }
     return unaswered;
   }
+  List<Question> questions;
+  Map<Question, dynamic> userAnswers = {};
+  Map<Question, dynamic> correctAnswers = {};
 
-  List<Map<String, dynamic>> userAnswers = List();
+  List<String> _getSynonyms(Question question) {
+    List<String> toMatch = question.answer.split("| A:");
+    toMatch.removeLast();
+    toMatch = toMatch[0].split("S:");
+    toMatch.removeAt(0);
+
+    List<String> synonyms = [];
+    List<String> answers = [];
+    toMatch.forEach((element) {
+      synonyms = synonyms + element.split(",");
+    });
+
+    synonyms.forEach((element) {
+      var clean = element.trim();
+      if (clean.length > 1)
+        answers.add(clean);
+    });
+    return answers;
+  }
+
+  List<String> _getAntonyms(Question question) {
+    List<String> toMatch = question.answer.split("| A:");
+    toMatch.removeAt(0);
+
+    List<String> synonyms = [];
+    List<String> answers = [];
+    toMatch.forEach((element) {
+      synonyms = synonyms + element.split(",");
+    });
+
+    synonyms.forEach((element) {
+      var clean = element.trim();
+      if (clean.length > 1)
+        answers.add(clean);
+    });
+    return answers;
+  }
+
+
 
   List<Draggable> _draggable(List<Question> questions) {
-
     List<Draggable> draggable = [];
-
     List<String> answers = [];
 
     questions.forEach((element) {
+      List<String> synonyms = _getSynonyms(element);
+      List<String> antonyms = _getAntonyms(element);
+      Map<String, dynamic> transformed_question = {};
+      transformed_question["synonyms"] = synonyms;
+      transformed_question["antonyms"] = antonyms;
+      correctAnswers[element] = transformed_question;
+      answers = answers + synonyms + antonyms;
+    });
 
-      List<String> toMatch = element.answer.split("| A:");
-
-      toMatch = toMatch + toMatch[0].split("S:");
-      toMatch.removeAt(0);
-      print(toMatch);
-      List<String> last = [];
-      toMatch.forEach((element) {
-        last = last + element.split(",");
-      });
-
-      last.forEach((element) {
-        var clean = element.trim();
-        if (clean.length > 1)
-          answers.add(clean);
-      });
-
-      answers.forEach((element) {
-        draggable.add(
-          Draggable<String>(
-            // Data is the value this Draggable stores.
-            data: element,
-            child: Container(
-              height: 50.0,
-              width: 90.0,
-              color: Colors.lightGreenAccent,
+    answers.forEach((element) {
+      draggable.add(
+        Draggable<String>(
+          // Data is the value this Draggable stores.
+          data: element,
+          child: Container(
+            height: 40.0,
+            width: 90.0,
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            child: Text(element),
+          ),
+          feedback: Container(
+            color: Colors.deepOrange,
+            height: 50,
+            width: 90,
+            child: const Icon(Icons.directions_run),
+          ),
+          childWhenDragging: Container(
+            height: 50.0,
+            width: 90.0,
+            color: Colors.pinkAccent,
+            child: Center(
               child: Text(element),
             ),
-            feedback: Container(
-              color: Colors.deepOrange,
-              height: 50,
-              width: 90,
-              child: const Icon(Icons.directions_run),
-            ),
-            childWhenDragging: Container(
-              height: 50.0,
-              width: 90.0,
-              color: Colors.pinkAccent,
-              child: Center(
-                child: Text(element),
-              ),
-            ),
           ),
-        );
-      });
+        ),
+      );
     });
 
 
     return draggable;
   }
 
-  List<DragTarget> _dragtarget(List<Question> questions) {
+  List<Widget> _dragtarget(List<Question> questions) {
 
-    List<DragTarget> dragtarget = new List();
+    List<Widget> dragtarget = new List();
+
+    dragtarget.add(Container(color: Colors.grey, child: Text("", style: TextStyle(color: Colors.white,  backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300))));
+    dragtarget.add(Container(color: Colors.grey, child: Text("Synonyms ", style: TextStyle(color: Colors.white, backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300)),));
+    dragtarget.add(Container(color: Colors.grey, child: Text("Antonyms ", style: TextStyle(color: Colors.white,  backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300))));
+
+
     questions.forEach((element) {
       Map<String, dynamic> display = Map();
       String word = element.question;
-      display["word"] = element.question;
       var synonyms = List();
       var antonyms = List();
       display["synonyms"] = synonyms;
       display["antonyms"] = antonyms;
-      userAnswers.add(display);
-
-      String s;
+      userAnswers[element] = display;
 
       dragtarget.add(
         DragTarget<String>(
@@ -155,7 +183,7 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
               ) {
             return Container(
               height: 100.0,
-              color: Colors.grey,
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text('$word'),
@@ -163,7 +191,6 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
             );
           },
           onAccept: (String data) {
-            print(element.question + " " + data);
           },
         ),
       );
@@ -176,17 +203,16 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
               List<dynamic> rejected,
               ) {
             return Container(
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               height: 100.0,
-              color: Colors.grey,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('$synonyms'),
+                child: Text(_synonymsString(synonyms.cast<String>()).toString()),
               ),
             );
           },
           onAccept: (String data) {
             display["synonyms"].add(data);
-            print(element.question + " " + data);
           },
         ),
       );
@@ -201,18 +227,15 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
               ) {
             return Container(
               height: 30.0,
-              //     width: 100.0,
-              color: Colors.grey,
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('$antonyms'),
+                child: Text(_synonymsString(antonyms.cast<String>()).toString()),
               ),
             );
           },
           onAccept: (String data) {
-
             display["antonyms"].add(data);
-            print(element.question + " " + data);
           },
         ),
       );
@@ -227,10 +250,10 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
 
     TotalPoints totalPoints = new TotalPoints();
 
-    List<Question> questions = _questions();
+    questions = _questions();
 
     var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height) / 2;
+    final double itemHeight = (size.height) / 5;
     final double itemWidth = size.width / 2;
 
     var synAntonyms =_draggable(questions).cast<Widget>();
@@ -257,32 +280,126 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
       body: SingleChildScrollView(
         padding: EdgeInsets.all(23.0),
         child: Column(children: <Widget> [
+          _submitButton(),
           // TODO: ADjust number of rows to screen size
           Row(
-              children: synAntonyms.sublist(0, (synAntonyms.length/2).toInt())
+              children: synAntonyms
           ),
-          Row(
-              children: synAntonyms.sublist((synAntonyms.length/2).toInt(), synAntonyms.length)
-          ),
-          Row(
-            // TODO: move this row to be included in grid
-            children: <Widget> [
-              Container(width: MediaQuery.of(context).size.width / 3, color: Colors.grey, child: Text("", style: TextStyle(color: Colors.white,  backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300))),
-              Container(width: MediaQuery.of(context).size.width / 3, color: Colors.grey, child: Text("Antonyms ", style: TextStyle(color: Colors.white,  backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300))),
-              Container(width: MediaQuery.of(context).size.width / 3.5, color: Colors.grey, child: Text("Synonyms ", style: TextStyle(color: Colors.white, backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300)),)
-            ],
-          ),
+          // Row(
+          //     children: synAntonyms.sublist(0, (synAntonyms.length/2).toInt())
+          // ),
+          // Row(
+          //     children: synAntonyms.sublist((synAntonyms.length/2).toInt(), synAntonyms.length)
+          // ),
           Container(
             height: 1000,
               child: GridView.count(
-            childAspectRatio: (itemWidth / itemHeight * 2),
-            crossAxisCount: 3,
-            children: _dragtarget(questions).cast<Widget>(),
-          )
-          )
+                  childAspectRatio: (itemWidth / itemHeight * 2),
+                  crossAxisCount: 3,
+                  children: _dragtarget(questions).cast<Widget>(),
+              )
+          ),
         ]
         ),
       ),
+    );
+  }
+
+  Map<String, VerificationResult> check() {
+    Map<String, VerificationResult> results = {};
+
+    correctAnswers.forEach((key, value) {
+      List<String> s = userAnswers[key]["synonyms"].cast<String>();
+      List<String> a = userAnswers[key]["antonyms"].cast<String>();
+
+      List<String> correct_s = correctAnswers[key]["synonyms"].cast<String>();
+      List<String> correct_a = correctAnswers[key]["antonyms"].cast<String>();
+
+      if (s.length != correct_s.length) {
+        results[key.question] = VerificationResult.INCORRECT;
+      }
+      else if (a.length != correct_a.length) {
+        results[key.question] = VerificationResult.INCORRECT;
+      } else {
+          s.sort();
+          a.sort();
+          correct_a.sort();
+          correct_s.sort();
+          if (DeepCollectionEquality().equals(correct_a, a) && DeepCollectionEquality().equals(correct_s, s)) {
+            results[key.question] = VerificationResult.CORRECT;
+            DataStorage.db.setPoint(key);
+          } else {
+            results[key.question] = VerificationResult.INCORRECT;
+          }
+      }
+    });
+    return results;
+  }
+
+
+  Widget _submitButton() {
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepOrange)
+        ),
+        child: new TextButton(
+          child: Text("Submit", style: GoogleFonts.quicksand()),
+          style: TextButton.styleFrom(
+            primary: Colors.deepOrange,
+            padding: EdgeInsets.all(16.0),
+          ),
+          onPressed: () {
+            Map<String, VerificationResult> results = check();
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialog(context, results),
+            ).then((value) => Navigator.pop(context));
+          }
+
+        ));
+  }
+
+  Widget _buildPopupDialog(BuildContext context, Map<String, VerificationResult> results) {
+
+    List<Widget> resultsDisplay = List<Widget>();
+
+    results.forEach((key, value) {
+      Color c = value == VerificationResult.CORRECT? Colors.green: Colors.red;
+      resultsDisplay.add(
+          new Text(
+           key,
+            style: TextStyle(color: c),
+          )
+      );
+    });
+    // for (int i = 0; i < results.length; i++) {
+    //   Color c = results[i] == VerificationResult.CORRECT? Colors.green: Colors.red;
+    //   resultsDisplay.add(
+    //       new Text(
+    //         (i + 1).toString() + ". " + questions[i].question.replaceFirst("_", answers[i]),
+    //         style: TextStyle(color: c),
+    //       )
+    //   );
+    // }
+
+
+    return new AlertDialog(
+      title: const Text('Exercise result'),
+      content: new Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: resultsDisplay
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 

@@ -1,10 +1,11 @@
 import 'package:english_learning_app/view/DefinitionsGame/DefinitionQuizState.dart';
 import 'package:english_learning_app/viewmodel/DefinitionsGame.dart';
+import 'package:english_learning_app/viewmodel/TotalPoints.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'Result.dart';
-
 
 class DefinitionsGameState extends State<DefinitionsGame> {
   final _questions = const [
@@ -47,15 +48,20 @@ class DefinitionsGameState extends State<DefinitionsGame> {
     {
       'definition': 'Q5. conspicuously and outrageously bad or reprehensible',
       'answers': [
-        {'text': 'emend', 'score': 0,},
+        {
+          'text': 'emend',
+          'score': 0,
+        },
         {'text': 'egregious', 'score': 1},
-        {'text': 'expunge', 'score': 0,},
+        {'text': 'expunge', 'score': 0},
+        {'text': 'onerous', 'score': 0},
       ],
     },
   ];
 
   var _questionIndex = 0;
   var _totalScore = 0;
+  TotalPoints _totalPoints = TotalPoints();
 
   void _answerQuestion(int score) {
     _totalScore += score;
@@ -63,30 +69,48 @@ class DefinitionsGameState extends State<DefinitionsGame> {
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
-    print(_questionIndex);
-    if (_questionIndex < _questions.length) {
-      print('We have more questions!');
-    } else {
-      print('No more questions!');
+    if (_questionIndex == _questions.length) {
+      _totalPoints.set(_totalPoints.get() + _totalScore);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    TotalPoints totalPoints = TotalPoints();
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Match a word to a definition'),
+          title: Text(
+            'Match a word to a definition',
+            style: GoogleFonts.quicksand(
+              fontSize: 32,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              children: <Widget>[
+                Text(totalPoints.formatter.format(totalPoints.get()),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300)),
+                Icon(Icons.stars_rounded, size: 32),
+                Text(' '),
+              ],
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(30.0),
           child: _questionIndex < _questions.length
               ? DefinitionQuiz(
-            answerQuestion: _answerQuestion,
-            questionIndex: _questionIndex,
-            questions: _questions,
-          ) //Quiz
-              : Result(_totalScore),
+                  answerQuestion: _answerQuestion,
+                  questionIndex: _questionIndex,
+                  questions: _questions,
+                ) //Quiz
+              : Result(_totalScore, _questions),
         ), //Padding
       ), //Scaffold
       debugShowCheckedModeBanner: false,

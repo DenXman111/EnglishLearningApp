@@ -13,22 +13,81 @@ enum VerificationResult {
 
 
 class BuildSentencesGameState extends State<BuildSentencesGame>{
-  var txt1 = TextEditingController();
+  var _controllers = new List<TextEditingController>();
+  var _sentence = new List<String>();
+
+  int _currentField = 0;
+  int _currentSentence = 1;
+  int N;
+
   static const scale = 7.2;
+
+  List<String> _getSentence(int num) {
+    List<String> s = new List<String>();
+    s.add("I");
+    for (int i = 1; i < num; i++) s.add("still");
+    s.add("love");
+    s.add("TCS");
+    return s;
+  }
+
+  _nextSentence(){
+    setState(() {
+      _currentSentence += 1;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     TotalPoints totalPoints = TotalPoints();
+    _sentence = _getSentence(_currentSentence);
+    N = _sentence.length;
+    for (int i = 0; i <= N; i++) {
+      if (_controllers.length == i) _controllers.add(TextEditingController());
+      _controllers[i].text = "";
+    }
+    _currentField = 0;
 
     ButtonStyle _wordStyle = ElevatedButton.styleFrom(
         primary: Colors.grey[400], // background
     );
 
-    Widget _buildPopupDialog(BuildContext context, String text) {
-      return new AlertDialog(
-        title: Text(text),
-      );
+
+    List<Widget> _getFields(){
+      List<Widget> fields = List<Widget>();
+      fields.add(new Text(" "));
+      for(int i = 0; i < N; i++){
+        fields.add(new Flexible(
+          child: TextField(
+            controller: _controllers[i],
+          ),
+        ));
+        fields.add(new Text(" "));
+      }
+      return fields;
     }
+
+    List<Widget> _getWords(){
+      List<Widget> words = List<Widget>();
+
+      for(int i = 0; i < N; i++) {
+        words.add(new ElevatedButton(
+            child: new Text(_sentence[i]),
+            style: _wordStyle,
+            onPressed: () {
+              _controllers[_currentField].text = _sentence[i];
+              if (_currentField < N) ++_currentField;
+            })
+        );
+      }
+      return words;
+    }
+
+    void _clearFields() {
+      for (int i = 0; i < N; i++) _controllers[i].text = "";
+      _currentField = 0;
+    }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -60,46 +119,12 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
           children: [
             Row(
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Flexible(
-                  child: TextField(
-                    controller: txt1,
-                  ),
-                ),
-                Text(" "),
-                Flexible(
-                  child: TextField(
-
-                  ),
-                ),
-                Text(" "),
-                Flexible(
-                  child: TextField(
-
-                  ),
-                ),
-              ],
+              children: _getFields(),
             ),
 
             ButtonBar(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ElevatedButton(
-                    child: new Text('am'),
-                    style: _wordStyle,
-                    onPressed: (){ txt1.text = "am";},
-                  ),
-                  ElevatedButton(
-                    child: new Text('Denis'),
-                    style: _wordStyle,
-                    onPressed: (){ txt1.text = "Denis";},
-                  ),
-                  ElevatedButton(
-                    child: new Text('I'),
-                    style: _wordStyle,
-                    onPressed: (){ txt1.text = "I";},
-                  ),
-                ],
+                children: _getWords(),
               ),
 
             ButtonBar(
@@ -111,7 +136,7 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
                     primary: Colors.red, // background
                     onPrimary: Colors.white, // foreground
                   ),
-                  onPressed: (){ txt1.text = "";},
+                  onPressed: _clearFields,
                 ),
                 ElevatedButton(
                   child: new Text('check'),
@@ -121,15 +146,31 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
                   ),
                   onPressed: (){
                     String msg;
-                    if (txt1.text == "I"){
-                      msg = "Correct";
-                    } else{
-                      msg = "Wrong";
-                    }
+                    var f = true;
+                    for (int i = 0; i < N; i++) if (_controllers[i].text != _sentence[i]) f = false;
+                    if (f) msg = "Correct"; else msg = "Wrong";
+
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: Text(msg),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => {
+                                _nextSentence(),
+                                Navigator.pop(context)
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    /*
                     showDialog(
                       context: context,
-                      builder: (BuildContext context) => _buildPopupDialog(context, msg),
-                    ).then((value) => Navigator.pop(context));
+                      builder: (BuildContext context) => AlertDialog(
+                      _buildPopupDialog(context, msg),
+                    ).then((value) => Navigator.pop(context));*/
                   },
                 ),
               ],
@@ -139,4 +180,5 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
       ),
     );
   }
+
 }

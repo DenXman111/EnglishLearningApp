@@ -51,7 +51,7 @@ class PastParticipleGameState extends State<PastParticipleGame> {
         home: Scaffold(
             appBar: AppBar(
               title: Text(
-                "Match word with it's synonyms and antonyms",
+                "Write past form of a verb",
                 style: GoogleFonts.quicksand(
                   fontSize: 32,
                   fontWeight: FontWeight.w300,

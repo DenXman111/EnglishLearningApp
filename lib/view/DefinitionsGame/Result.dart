@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class Result extends StatelessWidget {
   final int resultScore;
+  var questions;
 
-  Result(this.resultScore);
+  Result(this.resultScore, this.questions);
 
-  //Remark Logic
   String get resultPhrase {
     String resultText;
     if (resultScore >= 5) {
@@ -24,6 +24,20 @@ class Result extends StatelessWidget {
       print(resultScore);
     }
     return resultText;
+  }
+
+  List<Widget> displayResult(var question) {
+    List<Widget> res = new List<Widget>();
+    for (int i = 0; i < questions.length; ++i) {
+      res.add(new Text(questions[i]['definition']));
+      var answer = questions[i]['answers'];
+        for (int j = 0; j < 4; ++j) {
+          if (answer[j]['score'] == 1) {
+            res.add(new Text(" - " + answer[j]['text']));
+          }
+      }
+    }
+    return res;
   }
 
   @override
@@ -53,23 +67,25 @@ class Result extends StatelessWidget {
                 );
               }),
           ElevatedButton(
-            onPressed: () => showDialog<String>(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: const Text('Results'),
-               /* content: SingleChildScrollView(
-                  child: ListBody(
-                    children: displayResult(questions, correctAnswers),
-                  ),
-                ),*/
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'OK'),
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-            ),
+            onPressed: () =>
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      AlertDialog(
+                        title: const Text('Correct answers'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: displayResult(questions),
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                ),
             child: const Text('See correct answers'),
           ) //FlatButton
         ], //FlatButton

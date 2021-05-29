@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/ExerciseModel.dart';
 import 'package:english_learning_app/db/GameModel.dart';
@@ -14,6 +16,22 @@ class GamePageState extends State<GamePage>{
   int gameKey;
   Game game;
   GamePageState(this.game);
+  int tp;
+  TotalPoints totalPoints = new TotalPoints();
+
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _refreshPoints());
+  }
+
+  void _refreshPoints() {
+    if (mounted) {
+      setState(() {
+        tp = totalPoints.get();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

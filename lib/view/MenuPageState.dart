@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/GameModel.dart';
 import 'package:english_learning_app/viewmodel/DefinitionsGame.dart';
@@ -14,11 +15,26 @@ import 'package:google_fonts/google_fonts.dart';
 import '../viewmodel/TotalPoints.dart';
 
 class MenuPageState extends State<MenuPage> {
+  int tp;
+  TotalPoints totalPoints = new TotalPoints();
+
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _refreshPoints());
+  }
+
+  void _refreshPoints() {
+    if (mounted) {
+      setState(() {
+        tp = totalPoints.get();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Game> data = DataStorage.db.getAllGames();
-
-    TotalPoints totalPoints = new TotalPoints();
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +48,7 @@ class MenuPageState extends State<MenuPage> {
         actions: <Widget>[
           Row(
             children: <Widget>[
-              Text(totalPoints.formatter.format(totalPoints.get()),
+              Text('$tp',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -86,7 +102,6 @@ class MenuPageState extends State<MenuPage> {
                   //onSurface: Colors.white,
                 ),
                 onPressed: () {
-                  print(data[1].description);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

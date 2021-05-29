@@ -21,7 +21,6 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
   SynonymsAntonymsPageState();
 
   static const scale = 7.2;
-
   static const int questionsNumber = 6;
 
   String _synonymsString(List<String> synonyms) {

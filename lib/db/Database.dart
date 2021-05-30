@@ -48,8 +48,7 @@ class DataStorage {
     db.exercises.put(exercise.dbKey, exercise);
     exercise.save();
     Game game = db.games.get(exercise.gameKey);
-
-    var secondList = game.exerciseKeys.map((item) => String.fromEnvironment(item)).toList();
+    var secondList = game.exerciseKeys.toList();
     secondList.add(exercise.dbKey);
     game.exerciseKeys = secondList;
     game.save();

@@ -31,6 +31,8 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   google_fonts: ^2.0.0
+#  random-sentence: 1.0.4
+  sync_http: 0.3.0
   intl: ">=0.14.0"
   http: any
 

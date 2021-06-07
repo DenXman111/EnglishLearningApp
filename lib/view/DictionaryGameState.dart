@@ -19,7 +19,7 @@ class DictionaryGameState extends State<DictionaryGame> {
   StreamController _streamController;
   Stream _stream;
 
-  _search() async{
+  void _search() async{
     if (_editingController.text == null || _editingController.text.length == 0){
       _streamController.add(null);
       return;

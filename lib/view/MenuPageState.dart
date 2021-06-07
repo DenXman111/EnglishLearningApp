@@ -204,26 +204,7 @@ class MenuPageState extends State<MenuPage> {
                         builder: (context) => DefinitionsGame()),
                   );
                 },
-              ),
-              SizedBox(height: 25),
-              TextButton(
-                child: Text(
-                  'Settings',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  print('Settings');
-                },
-              ),
+              )
             ],
           ),
         ),

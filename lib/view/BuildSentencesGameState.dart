@@ -1,20 +1,27 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/viewmodel/BuildSentencesGame.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 import '../viewmodel/TotalPoints.dart';
 
-enum VerificationResult {
-  CORRECT,
-  INCORRECT
-}
-
-
 class BuildSentencesGameState extends State<BuildSentencesGame>{
+  var obj = ["TCS", "door", "man", "student", "happy meal"];
+  var subj = ["I", "killer", "car", "cat", "black dog"];
+  var verb = ["killed", "love", "product", "passed", "go to"];
+  
   var _controllers = new List<TextEditingController>();
   var _sentence = new List<String>();
+  var rng = new Random();
+  String _sentenceString;
+
+  final String _url = "https://linguatools-sentence-generating.p.rapidapi.com/realise";
+  final String _token = "ADD TOKEN";
 
   int _currentField = 0;
   int _currentSentence = 1;
@@ -22,12 +29,37 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
 
   static const scale = 7.2;
 
-  List<String> _getSentence(int num) {
+  void _generateSentence() async{
+    _sentenceString = null;
+    //print("Generating");
+    var query = {'object': obj[rng.nextInt(obj.length)],
+      'subject': subj[rng.nextInt(subj.length)],
+      'verb': verb[rng.nextInt(verb.length)]};
+    await http.get(Uri.https("linguatools-sentence-generating.p.rapidapi.com", "/realise", query),
+        headers: { "x-rapidapi-key": _token,
+        "x-rapidapi-host": "linguatools-sentence-generating.p.rapidapi.com"}).then((response){
+
+      _sentenceString = json.decode(response.body)["sentence"];
+      //print(json.decode(response.body)["sentence"]);
+      //print(_sentenceString);
+    });
+
+  }
+
+  List<String> _getSentence(int num){
     List<String> s = new List<String>();
-    s.add("I");
-    for (int i = 1; i < num; i++) s.add("still");
-    s.add("love");
-    s.add("TCS");
+    if (_sentenceString == null) {
+      s.add("I");
+      for (int i = 1; i < num; i++)
+        s.add("still");
+      s.add("love");
+      s.add("TCS");
+    } else{
+      RegExp r = RegExp(r"(\S+)([\s]+|$)");
+      var matches = r.allMatches(_sentenceString);
+      matches.toList().asMap().forEach((i, m) => s.add(m.group(1)));
+      _generateSentence();
+    }
     return s;
   }
 
@@ -39,6 +71,7 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
 
   @override
   Widget build(BuildContext context) {
+    if (_currentSentence == 1) _generateSentence();
     TotalPoints totalPoints = TotalPoints();
     _sentence = _getSentence(_currentSentence);
     N = _sentence.length;
@@ -149,6 +182,7 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
                     var f = true;
                     for (int i = 0; i < N; i++) if (_controllers[i].text != _sentence[i]) f = false;
                     if (f) msg = "Correct"; else msg = "Wrong";
+                    if (f) totalPoints.set(totalPoints.get() + 1);
 
                     showDialog<String>(
                       context: context,
@@ -180,5 +214,4 @@ class BuildSentencesGameState extends State<BuildSentencesGame>{
       ),
     );
   }
-
 }

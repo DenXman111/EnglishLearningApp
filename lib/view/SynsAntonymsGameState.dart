@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/ExerciseModel.dart';
 import 'package:english_learning_app/db/QuestionModel.dart';
@@ -7,13 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection/collection.dart';
 import '../viewmodel/TotalPoints.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 enum VerificationResult {
   CORRECT,
   INCORRECT
 }
-
-// https://api.flutter.dev/flutter/widgets/Draggable-class.html
 
 
 class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
@@ -22,18 +23,28 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
 
   static const scale = 7.2;
   static const int questionsNumber = 6;
+  static const int secondClass = 2;
+
+  List<Widget> dragTargets;
+  List<Draggable> draggable;
+  bool reset = false;
 
   String _synonymsString(List<String> synonyms) {
     var a = "";
     synonyms.forEach((element) {
-      a += element + " ";
+      a += element + ", ";
     });
+    if (a.length > 2)
+      a = a.substring(0, a.length - 2);
     return a;
   }
 
   List<Question> _questions() {
-    // TODO: magic number
-    List<Exercise> exercises = DataStorage.db.getAllExercises(2);
+
+    if (this.questions != null)
+      return this.questions;
+
+    List<Exercise> exercises = DataStorage.db.getAllExercises(secondClass);
     assert (exercises.length == 1);
     List<Question> questions = DataStorage.db.getAllQuestions(exercises[0].dbKey);
     questions.shuffle();
@@ -109,6 +120,10 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
 
 
   List<Draggable> _draggable(List<Question> questions) {
+    if (this.draggable != null) {
+      return this.draggable;
+    }
+
     List<Draggable> draggable = [];
     List<String> answers = [];
 
@@ -125,7 +140,6 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     answers.forEach((element) {
       draggable.add(
         Draggable<String>(
-          // Data is the value this Draggable stores.
           data: element,
           child: Container(
             height: 40.0,
@@ -155,9 +169,9 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     return draggable;
   }
 
-  List<Widget> _dragtarget(List<Question> questions) {
+  List<Widget> _dragTarget(List<Question> questions) {
 
-    List<Widget> dragtarget = new List();
+    List<Widget> dragtarget = [];
 
     dragtarget.add(Container(color: Colors.grey, child: Text("", style: TextStyle(color: Colors.white,  backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300))));
     dragtarget.add(Container(color: Colors.grey, child: Text("Synonyms ", style: TextStyle(color: Colors.white, backgroundColor: Colors.grey, fontSize: 24, fontWeight: FontWeight.w300)),));
@@ -167,8 +181,8 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     questions.forEach((element) {
       Map<String, dynamic> display = Map();
       String word = element.question;
-      var synonyms = List();
-      var antonyms = List();
+      var synonyms = [];
+      var antonyms = [];
       display["synonyms"] = synonyms;
       display["antonyms"] = antonyms;
       userAnswers[element] = display;
@@ -189,8 +203,7 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
               ),
             );
           },
-          onAccept: (String data) {
-          },
+          onAccept: (String data) {},
         ),
       );
 
@@ -203,7 +216,7 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
               ) {
             return Container(
               decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-              height: 100.0,
+              height: 150.0,
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(_synonymsString(synonyms.cast<String>()).toString()),
@@ -211,7 +224,8 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
             );
           },
           onAccept: (String data) {
-            display["synonyms"].add(data);
+            if (!display["synonyms"].contains(data))
+              display["synonyms"].add(data);
           },
         ),
       );
@@ -234,7 +248,8 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
             );
           },
           onAccept: (String data) {
-            display["antonyms"].add(data);
+            if (!display["antonyms"].contains(data))
+              display["antonyms"].add(data);
           },
         ),
       );
@@ -243,19 +258,56 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     return dragtarget;
   }
 
-  //
-  @override
-  Widget build(BuildContext context) {
-
-    TotalPoints totalPoints = new TotalPoints();
-
+  List<Widget> _displayItems() {
     questions = _questions();
 
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height) / 5;
     final double itemWidth = size.width / 2;
 
-    var synAntonyms =_draggable(questions).cast<Widget>();
+    draggable = _draggable(questions);
+    List<Widget> synAntonyms = draggable.cast<Widget>();
+
+    if (dragTargets == null) {
+      dragTargets = _dragTarget(questions);
+    }
+
+    var targets = dragTargets;
+
+    int questionsPerRow = 3;
+    int height = 200;
+    if (kIsWeb) {
+      height = 90;
+      questionsPerRow = 8;
+    }
+
+
+    return [
+      Row(children: [_submitButton(), _resetButton()]),
+      Container(
+          height: height.toDouble(),
+          child: GridView.count(
+            childAspectRatio: (itemWidth / itemHeight * 2),
+            crossAxisCount: questionsPerRow,
+            children: synAntonyms,
+          )
+      ),
+      Container(
+          height: 1000,
+          child: GridView.count(
+            childAspectRatio: (itemWidth / itemHeight * 2),
+            crossAxisCount: 3,
+            children: targets,
+          )
+      ),
+    ];
+  }
+
+  //
+  @override
+  Widget build(BuildContext context) {
+
+    TotalPoints totalPoints = new TotalPoints();
 
     return Scaffold(
       appBar: AppBar(
@@ -278,27 +330,7 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(23.0),
-        child: Column(children: <Widget> [
-          _submitButton(),
-          // TODO: ADjust number of rows to screen size
-          Row(
-              children: synAntonyms
-          ),
-          // Row(
-          //     children: synAntonyms.sublist(0, (synAntonyms.length/2).toInt())
-          // ),
-          // Row(
-          //     children: synAntonyms.sublist((synAntonyms.length/2).toInt(), synAntonyms.length)
-          // ),
-          Container(
-            height: 1000,
-              child: GridView.count(
-                  childAspectRatio: (itemWidth / itemHeight * 2),
-                  crossAxisCount: 3,
-                  children: _dragtarget(questions).cast<Widget>(),
-              )
-          ),
-        ]
+        child: Column(children: _displayItems()
         ),
       ),
     );
@@ -359,6 +391,40 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
         ));
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _refreshPoints());
+  }
+
+  void _refreshPoints(){
+    if (mounted && reset) {
+      setState(() {
+        reset = false;
+        dragTargets = _dragTarget(questions);
+      });
+    }
+  }
+
+  Widget _resetButton() {
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepOrange)
+        ),
+        child: new TextButton(
+            child: Text("Reset answers", style: GoogleFonts.quicksand()),
+            style: TextButton.styleFrom(
+              primary: Colors.deepOrange,
+              padding: EdgeInsets.all(16.0),
+            ),
+            onPressed: () {
+              reset = true;
+            }
+
+        ));
+  }
+
   Widget _buildPopupDialog(BuildContext context, Map<String, VerificationResult> results) {
 
     List<Widget> resultsDisplay = List<Widget>();
@@ -372,16 +438,6 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
           )
       );
     });
-    // for (int i = 0; i < results.length; i++) {
-    //   Color c = results[i] == VerificationResult.CORRECT? Colors.green: Colors.red;
-    //   resultsDisplay.add(
-    //       new Text(
-    //         (i + 1).toString() + ". " + questions[i].question.replaceFirst("_", answers[i]),
-    //         style: TextStyle(color: c),
-    //       )
-    //   );
-    // }
-
 
     return new AlertDialog(
       title: const Text('Exercise result'),

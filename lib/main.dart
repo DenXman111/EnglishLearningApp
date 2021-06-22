@@ -5,7 +5,8 @@ import 'db/Database.dart';
 import 'viewmodel/MenuPage.dart';
 
 void main() async{
-  await DataStorage.db.DBInit(true);
+  bool reset = false;
+  await DataStorage.db.DBInit(reset);
   runApp(MyApp());
 }
 

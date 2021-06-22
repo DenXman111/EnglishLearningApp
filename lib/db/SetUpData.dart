@@ -44,5 +44,5 @@ const List<Map<String, dynamic>> gamesSetUpData = [
 ];
 
 const Map<String, dynamic> specialValsSetUpData = {
-  "points_sum": 77
+  "points_sum": 0
 };

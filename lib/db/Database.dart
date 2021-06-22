@@ -30,7 +30,7 @@ class DataStorage {
     games = await Hive.openBox('GameStore');
     special = await Hive.openBox('Special');
 
-    if (reset) {
+    if (reset || (questions.isEmpty || exercises.isEmpty || games.isEmpty || special.isEmpty)) {
         await questions.deleteAll(questions.keys);
         await games.deleteAll(games.keys);
         await special.deleteAll(special.keys);

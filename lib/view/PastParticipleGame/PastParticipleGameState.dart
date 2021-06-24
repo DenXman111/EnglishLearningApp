@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:english_learning_app/db/Database.dart';
+import 'package:english_learning_app/db/ExerciseModel.dart';
+import 'package:english_learning_app/db/QuestionModel.dart';
 
 import '../../viewmodel/TotalPoints.dart';
 import '../../viewmodel/PastParticipleGameWidget.dart';
@@ -8,30 +11,9 @@ import 'QuizState.dart';
 import 'ResultState.dart';
 
 class PastParticipleGameState extends State<PastParticipleGame> {
-  final _questions = const [
-    {
-      'questionText': '1/5 hit',
-      'answers': ['hit', 'hit'],
-    },
-    {
-      'questionText': '2/5 sing',
-      'answers': ['sang', 'sung'],
-    },
-    {
-      'questionText': '3/5  go',
-      'answers': ['went', 'gone'],
-    },
-    {
-      'questionText': '4/5 throw',
-      'answers': ['threw', 'thrown'],
-    },
-    {
-      'questionText': '5/5 do',
-      'answers': ['did', 'done'],
-    },
-  ];
-
+  List<Map<String, Object>> _questions;
   var _questionIndex = 0;
+  var _questionsAmount = 5;
   int pointsBeforeGame = 0;
   var _correctAnswers = [
     [0, 0],
@@ -47,11 +29,27 @@ class PastParticipleGameState extends State<PastParticipleGame> {
     });
   }
 
+  List<Map<String, Object>> prepQuestionsArray(List<Question> questions) {
+    List<Map<String, Object>> ret = new List<Map<String, Object>>();
+    for (int i = 0; i < _questionsAmount; ++i) {
+      var ans = questions[i].answer.split(',');
+      ret.add({'questionText': questions[i].question,
+        'answers': ans
+      });
+    }
+    return ret;
+  }
+
   @override
   Widget build(BuildContext context) {
     TotalPoints totalPoints = TotalPoints();
     if (_questionIndex == 0) {
       pointsBeforeGame = totalPoints.get();
+      List<Exercise> exercises = DataStorage.db.getAllExercises(6);
+      List<Question> questions =
+      DataStorage.db.getAllQuestions(exercises[0].dbKey);
+      questions.shuffle();
+      _questions = prepQuestionsArray(questions);
     }
     return new Scaffold(
         appBar: AppBar(
@@ -78,7 +76,7 @@ class PastParticipleGameState extends State<PastParticipleGame> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(30.0),
-          child: _questionIndex < _questions.length
+          child: _questionIndex < _questionsAmount
               ? Quiz(
                   answerQuestion: _answerQuestion,
                   questionIndex: _questionIndex,

@@ -65,7 +65,6 @@ class DefinitionsGameState extends State<DefinitionsGame> {
 
   void _answerQuestion(int score) {
     _totalScore += score;
-
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
@@ -78,42 +77,40 @@ class DefinitionsGameState extends State<DefinitionsGame> {
   Widget build(BuildContext context) {
     TotalPoints totalPoints = TotalPoints();
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Match a word to a definition',
-            style: GoogleFonts.quicksand(
-              fontSize: 32,
-              fontWeight: FontWeight.w300,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Match a word to a definition',
+          style: GoogleFonts.quicksand(
+            fontSize: 32,
+            fontWeight: FontWeight.w300,
           ),
-          actions: <Widget>[
-            Row(
-              children: <Widget>[
-                Text(totalPoints.formatter.format(totalPoints.get()),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w300)),
-                Icon(Icons.stars_rounded, size: 32),
-                Text(' '),
-              ],
-            ),
-          ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: _questionIndex < _questions.length
-              ? DefinitionQuiz(
-                  answerQuestion: _answerQuestion,
-                  questionIndex: _questionIndex,
-                  questions: _questions,
-                ) //Quiz
-              : Result(_totalScore, _questions),
-        ), //Padding
-      ), //Scaffold
-      debugShowCheckedModeBanner: false,
-    ); //MaterialApp
+        actions: <Widget>[
+          Row(
+            children: <Widget>[
+              Text(totalPoints.formatter.format(totalPoints.get()),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w300)),
+              Icon(Icons.stars_rounded, size: 32),
+              Text(' '),
+            ],
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: _questionIndex < _questions.length
+            ? DefinitionQuiz(
+                answerQuestion: _answerQuestion,
+                questionIndex: _questionIndex,
+                questions: _questions,
+              ) //Quiz
+            : Result(_totalScore, _questions),
+      ), //Padding
+    ); //Scaffold
+    //MaterialApp
   }
 }

@@ -33,7 +33,13 @@ class PastParticipleGameState extends State<PastParticipleGame> {
 
   var _questionIndex = 0;
   int pointsBeforeGame = 0;
-  var _correctAnswers = [[0,0],[0,0],[0,0],[0,0],[0,0]];
+  var _correctAnswers = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0]
+  ];
 
   void _answerQuestion() {
     setState(() {
@@ -47,36 +53,40 @@ class PastParticipleGameState extends State<PastParticipleGame> {
     if (_questionIndex == 0) {
       pointsBeforeGame = totalPoints.get();
     }
-    return MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                "Write past form of a verb",
-                style: GoogleFonts.quicksand(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-              actions: <Widget>[
-                Row(
-                  children: <Widget> [
-                    Text(totalPoints.formatter.format(totalPoints.get()), style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300)),
-                    Icon(Icons.stars_rounded, size: 32),
-                    Text(' '),
-                  ],
-                ),
+    return new Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Write past form of a verb",
+            style: GoogleFonts.quicksand(
+              fontSize: 32,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              children: <Widget>[
+                Text(totalPoints.formatter.format(totalPoints.get()),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300)),
+                Icon(Icons.stars_rounded, size: 32),
+                Text(' '),
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: _questionIndex < _questions.length
-                  ? Quiz(
-                      answerQuestion: _answerQuestion,
-                      questionIndex: _questionIndex,
-                      questions: _questions,
-                      correctAnswers: _correctAnswers,
-                    )
-                  : Result(totalPoints.get()-pointsBeforeGame, _questions, _correctAnswers),
-            )));
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: _questionIndex < _questions.length
+              ? Quiz(
+                  answerQuestion: _answerQuestion,
+                  questionIndex: _questionIndex,
+                  questions: _questions,
+                  correctAnswers: _correctAnswers,
+                )
+              : Result(totalPoints.get() - pointsBeforeGame, _questions,
+                  _correctAnswers),
+        ));
   }
 }

@@ -35,7 +35,7 @@ class Result extends StatelessWidget {
           if (answer[j]['score'] == 1) {
             res.add(new Text(" - " + answer[j]['text']));
           }
-      }
+        }
     }
     return res;
   }

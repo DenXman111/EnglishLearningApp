@@ -22,7 +22,7 @@ const List<Map<String, dynamic>> gamesSetUpData = [
   },
   {
     "id": 4,
-    "title": "Choose word from definition",
+    "title": "Choose word from a definition",
     "storageType": "API",
     "description": "Description",
     "exerciseKeys": []
@@ -38,7 +38,7 @@ const List<Map<String, dynamic>> gamesSetUpData = [
     "id": 6,
     "title": "Past Participle",
     "storageType": "API",
-    "description": "Game three - grammar",
+    "description": "Game six - grammar",
     "exerciseKeys": []
   },
 ];

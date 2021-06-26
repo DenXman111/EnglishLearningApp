@@ -2,6 +2,7 @@ import 'package:english_learning_app/db/QuestionModel.dart';
 import 'package:english_learning_app/resources/GapFillingGameSetup.dart';
 import 'package:english_learning_app/resources/SynonymsAndAntonymsGameSetup.dart';
 import 'package:english_learning_app/resources/PastParticipleGameSetup.dart';
+import 'package:english_learning_app/resources/DefinitionsGameSetup.dart';
 
 import 'Database.dart';
 import 'ExerciseModel.dart';
@@ -68,6 +69,14 @@ DBResetData() async {
   });
 
   pastParticipleSetUpQuestions.forEach((element) {
+    DataStorage.db.storeQuestion(Question.fromMap(element));
+  });
+
+  definitionsSetUpExercise.forEach((element) {
+    DataStorage.db.storeExercise(Exercise.fromMap(element));
+  });
+
+  definitionsSetUpQuestions.forEach((element) {
     DataStorage.db.storeQuestion(Question.fromMap(element));
   });
 }

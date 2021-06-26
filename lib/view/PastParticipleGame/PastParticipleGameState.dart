@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/ExerciseModel.dart';
 import 'package:english_learning_app/db/QuestionModel.dart';
-
 import '../../viewmodel/TotalPoints.dart';
 import '../../viewmodel/PastParticipleGameWidget.dart';
 import 'QuizState.dart';
@@ -33,9 +32,7 @@ class PastParticipleGameState extends State<PastParticipleGame> {
     List<Map<String, Object>> ret = new List<Map<String, Object>>();
     for (int i = 0; i < _questionsAmount; ++i) {
       var ans = questions[i].answer.split(',');
-      ret.add({'questionText': questions[i].question,
-        'answers': ans
-      });
+      ret.add({'questionText': questions[i].question, 'answers': ans});
     }
     return ret;
   }
@@ -47,7 +44,7 @@ class PastParticipleGameState extends State<PastParticipleGame> {
       pointsBeforeGame = totalPoints.get();
       List<Exercise> exercises = DataStorage.db.getAllExercises(6);
       List<Question> questions =
-      DataStorage.db.getAllQuestions(exercises[0].dbKey);
+          DataStorage.db.getAllQuestions(exercises[0].dbKey);
       questions.shuffle();
       _questions = prepQuestionsArray(questions);
     }

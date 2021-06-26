@@ -4,64 +4,18 @@ import 'package:english_learning_app/viewmodel/TotalPoints.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:english_learning_app/db/ExerciseModel.dart';
+import 'package:english_learning_app/db/QuestionModel.dart';
+import 'package:english_learning_app/db/Database.dart';
 
 import 'Result.dart';
 
 class DefinitionsGameState extends State<DefinitionsGame> {
-  final _questions = const [
-    {
-      'definition': 'Q1. a state or condition markedly different from the norm',
-      'answers': [
-        {'text': 'abjure', 'score': 0},
-        {'text': 'evanescent', 'score': 0},
-        {'text': 'aberration', 'score': 1},
-        {'text': 'intimation', 'score': 0},
-      ],
-    },
-    {
-      'definition': 'Q2. abusive language used to express blame or censure',
-      'answers': [
-        {'text': 'ostensible', 'score': 0},
-        {'text': 'dirge', 'score': 0},
-        {'text': 'clamor', 'score': 0},
-        {'text': 'invective', 'score': 1},
-      ],
-    },
-    {
-      'definition': ' Q3. transparently clear; easily understandable',
-      'answers': [
-        {'text': 'vitriolic', 'score': 0},
-        {'text': 'pellucid', 'score': 1},
-        {'text': 'impinge', 'score': 0},
-        {'text': 'equivocal', 'score': 0},
-      ],
-    },
-    {
-      'definition': 'Q4. something causing misery or death',
-      'answers': [
-        {'text': 'bane', 'score': 1},
-        {'text': 'adamant', 'score': 0},
-        {'text': 'wanton', 'score': 0},
-        {'text': 'pernicious', 'score': 0},
-      ],
-    },
-    {
-      'definition': 'Q5. conspicuously and outrageously bad or reprehensible',
-      'answers': [
-        {
-          'text': 'emend',
-          'score': 0,
-        },
-        {'text': 'egregious', 'score': 1},
-        {'text': 'expunge', 'score': 0},
-        {'text': 'onerous', 'score': 0},
-      ],
-    },
-  ];
-
+  List<Map<String, Object>> _questions;
   var _questionIndex = 0;
   var _totalScore = 0;
   TotalPoints _totalPoints = TotalPoints();
+  var _questionsAmount = 5;
 
   void _answerQuestion(int score) {
     _totalScore += score;
@@ -73,10 +27,28 @@ class DefinitionsGameState extends State<DefinitionsGame> {
     }
   }
 
+  List<Map<String, Object>> prepQuestionsArray(List<Question> questions) {
+    List<Map<String, Object>> ret = new List<Map<String, Object>>();
+    for (int i = 0; i < _questionsAmount; i++) {
+      var ans = questions[i].answer.split(',');
+      List answers = new List<Map<String, Object>>();
+      for (int j = 0; j < 8; j+=2) {
+        answers.add({'text': ans[j], 'score': int.parse(ans[j+1])});
+      }
+      ret.add({'definition': questions[i].question, 'answers': answers});
+    }
+    return ret;
+  }
+
   @override
   Widget build(BuildContext context) {
     TotalPoints totalPoints = TotalPoints();
-
+    if (_questionIndex == 0) {
+      List<Exercise> exercises = DataStorage.db.getAllExercises(4);
+      List<Question> questions = DataStorage.db.getAllQuestions(exercises[0].dbKey);
+      questions.shuffle();
+      _questions = prepQuestionsArray(questions);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -102,7 +74,7 @@ class DefinitionsGameState extends State<DefinitionsGame> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
-        child: _questionIndex < _questions.length
+        child: _questionIndex < _questionsAmount
             ? DefinitionQuiz(
                 answerQuestion: _answerQuestion,
                 questionIndex: _questionIndex,

@@ -32,10 +32,43 @@ class MenuPageState extends State<MenuPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  List<Widget> buttons() {
     List<Game> data = DataStorage.db.getAllGames();
 
+    List<String> titles = [data[0].title, data[1].title, data[2].title, data[4].title, data[5].title, "Definitions"];
+    List classes = [DictionaryGame(), SynsAntonymsGamePage(), BuildSentencesGame(), GamePage(data[4]), PastParticipleGame(), DefinitionsGame()];
+
+    List<Widget> buttonList = [];
+
+    for (int i = 0; i < titles.length; i++) {
+      buttonList.add(TextButton(
+        child: Text(
+          titles[i],
+          style: GoogleFonts.quicksand(
+            fontSize: 48,
+            fontWeight: FontWeight.w400,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        style: TextButton.styleFrom(
+          primary: Colors.deepOrange,
+          padding: EdgeInsets.all(16.0),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => classes[i]
+            ),
+          );
+        },
+      ),);
+      buttonList.add(SizedBox(height: 25));
+    }
+    return buttonList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -63,149 +96,7 @@ class MenuPageState extends State<MenuPage> {
         child: new SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                child: Text(
-                  data[0].title,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  print(data[0].description);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DictionaryGame()),
-                  );
-                },
-              ),
-              SizedBox(height: 25),
-              TextButton(
-                child: Text(
-                  data[1].title,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SynsAntonymsGamePage()),
-                  );
-                },
-              ),
-              SizedBox(height: 25),
-              TextButton(
-                child: Text(
-                  data[2].title,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BuildSentencesGame(),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 25),
-              TextButton(
-                child: Text(
-                  data[4].title,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GamePage(data[4]),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 25),
-              TextButton(
-                child: Text(
-                  data[5].title,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  print(data[5].description);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PastParticipleGame()),
-                  );
-                },
-              ),
-              SizedBox(height: 25),
-              TextButton(
-                child: Text(
-                  "Definitions",
-                  style: GoogleFonts.quicksand(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.deepOrange,
-                  padding: EdgeInsets.all(16.0),
-                  //backgroundColor: Colors.grey,
-                  //onSurface: Colors.white,
-                ),
-                onPressed: () {
-                  // TODO  print("dodac do bazy");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DefinitionsGame()),
-                  );
-                },
-              )
-            ],
+            children: buttons()
           ),
         ),
       ),

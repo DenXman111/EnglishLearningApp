@@ -19,8 +19,6 @@ enum VerificationResult {
 
 class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
 
-  SynonymsAntonymsPageState();
-
   static const scale = 7.2;
   static const int questionsNumber = 6;
   static const int secondClass = 2;
@@ -48,6 +46,7 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     assert (exercises.length == 1);
     List<Question> questions = DataStorage.db.getAllQuestions(exercises[0].dbKey);
     questions.shuffle();
+
     List<Question> unaswered = [];
     List<Question> answered = [];
 
@@ -136,6 +135,8 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
       correctAnswers[element] = transformed_question;
       answers = answers + synonyms + antonyms;
     });
+
+    answers.shuffle();
 
     answers.forEach((element) {
       draggable.add(

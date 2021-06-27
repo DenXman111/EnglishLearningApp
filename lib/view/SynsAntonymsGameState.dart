@@ -38,7 +38,6 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
   }
 
   List<Question> _questions() {
-
     if (this.questions != null)
       return this.questions;
 
@@ -51,7 +50,7 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
     List<Question> answered = [];
 
     for (int i = 0; i < questions.length; i++) {
-      if (questions[i].pointObtained) {
+      if (!questions[i].pointObtained) {
         unaswered.add(questions[i]);
         if (unaswered.length == questionsNumber)
           break;
@@ -60,20 +59,12 @@ class SynonymsAntonymsPageState extends State<SynsAntonymsGamePage>{
       }
     }
 
-    questions.forEach((element) {
-      if (element.pointObtained) {
-        unaswered.add(element);
-        if (unaswered.length == questionsNumber) {
-
-        }
-      }
-    });
-
     if (unaswered.length < questionsNumber) {
       unaswered = unaswered + answered.sublist(0, questionsNumber - unaswered.length);
     }
     return unaswered;
   }
+
   List<Question> questions;
   Map<Question, dynamic> userAnswers = {};
   Map<Question, dynamic> correctAnswers = {};

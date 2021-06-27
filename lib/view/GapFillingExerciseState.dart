@@ -2,6 +2,7 @@ import 'package:english_learning_app/db/Database.dart';
 import 'package:english_learning_app/db/ExerciseModel.dart';
 import 'package:english_learning_app/db/QuestionModel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -46,26 +47,27 @@ class GapFillingExercisePageState extends State<ExercisePage>{
 
       for (int i = 0; i < questions.length; i++) {
         String question = (i + 1).toString() + ". " + questions[i].question;
-        List<String> questionParts = question.split("_");
-        double maxWidth = questionParts[0].length + questionParts[1].length + 5.0;
 
         double questionFillLength = questions[i].answer.length.toDouble() < 3? 3.toDouble(): questions[i].answer.length.toDouble();
+
+        if (question.length > 50 && (!kIsWeb)) {
+          int start = 25;
+          while (question[start] != ' ') start++;
+          question = question.substring(0, start) + "\n" + question.substring(start);
+        }
 
         input.add(Container(
             width: (question.length + questionFillLength) * scale,
             child:
-            TextFormField(
-                    controller: TextEditingController(),
-                    decoration: new InputDecoration(
-                        prefixText: questionParts[0],
-                        hintText: "_" * questionFillLength.toInt(),
-                        suffixText: questionParts[1],
-                        prefixIconConstraints: BoxConstraints(maxWidth: maxWidth),
-                    ),
-        )
+            TextField(
+              controller: TextEditingController(),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey),),
+                labelText: question,
+              ),
+            )
         )
         );
-
       }
       return input;
     }
@@ -116,11 +118,10 @@ class GapFillingExercisePageState extends State<ExercisePage>{
           padding: EdgeInsets.all(16.0),
         ),
         onPressed: () {
-          // TODO: OPTIMISE
-          List<String> answers = List<String>();
+          List<String> answers = [];
           input.forEach((element) {
             Container c = element;
-            TextFormField tff = c.child;
+            TextField tff = c.child;
             answers.add(tff.controller.text);
           });
 
